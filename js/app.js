@@ -1,3 +1,4 @@
+// declared state of form
 let state =  {
   price: getNumber (document.querySelectorAll('[name="price"]')[0].value),
   loan_years: document.querySelectorAll('[name="loan_years"]')[0].value,
@@ -7,13 +8,14 @@ let state =  {
   home_insurance: document.querySelectorAll('[name="home_insurance"]')[0].value,
   hoa: document.querySelectorAll('[name="hoa"]')[0].value
 }
+//declared variables
 let totalLoan, 
 totalMonths,
-monthlyInterest,
-monthlyPrincipalInterest,
-monthlyPropertyTaxes,
-monthlyHomeInsurance,
-monthlyHOA,
+monthlyInterest = 200,
+monthlyPrincipalInterest = 330,
+monthlyPropertyTaxes = 355,
+monthlyHomeInsurance = 100,
+monthlyHOA = 200,
 
 labels = ["Principal & Interest", "Property Tax", "Home Insurance", "HOA"],
   backgroundColor = [
@@ -32,11 +34,11 @@ labels = ["Principal & Interest", "Property Tax", "Home Insurance", "HOA"],
     "rgba(153, 102, 255, 1)",
     "rgba(255, 159, 64, 1)",
   ];
-
+//removes characters and returns only numbers
 function getNumber(string) {
   return Number(string.replace(/[^0-9\.-]+/g, ""))
-} console.log(state);
-
+}
+//initialized chart js instance
 const ctx = document.getElementById('myChart').getContext('2d');
 const myChart = new Chart(ctx, {
     type: 'doughnut',
@@ -44,7 +46,12 @@ const myChart = new Chart(ctx, {
         labels: labels,
         datasets: [{
             label: '# of Votes',
-            data: [12, 19, 3, 5, 2, 3],
+            data: [
+              monthlyPrincipalInterest,
+              monthlyPropertyTaxes,
+              monthlyHomeInsurance,
+              monthlyHOA
+            ],
             backgroundColor: backgroundColor,
             borderColor: borderColor,
             borderWidth: 1
@@ -58,4 +65,26 @@ const myChart = new Chart(ctx, {
         }
     }
 });
-console.log(state)
+myChart.options.animation = false;
+
+//add event listener to inputs
+let i;
+let inputTexts = document.getElementsByClassName('form-group__textInput');
+for(i = 0; i < inputTexts.length; i++) {
+  inputTexts[i].addEventListener('input', updateInputsState)
+}
+
+function updateInputsState(event) {
+  let name = event.target.name;
+  let value = event.target.value;
+  if(name == 'price'){
+    value = getNumber(value);
+  }
+  state = {
+    ...state,
+    [name]: value
+  }
+  console.log(state)
+}
+
+console.log(inputTexts)
